@@ -51,8 +51,46 @@
   color: teal;
   cursor: pointer;
 }
+.my{
+  display: flex;
+  gap: 15px;
+  margin: 15px 15px;
+  padding: 15px 10px;
+}
+.my > input{
+  display: none;
+}
+.my > label{
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  height: 35px;
+  border-radius:25px ;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease-out;
+}
+.my > label:hover{
+  cursor: pointer;
+  color: white;
+  transform: translateZ(10px);
+}
+
+
 </style>
 <body>
+<form action="/user" class="my" method="post">
+  <%users.forEach((user)=>{%>
+    <input type="submit" name="user" value="<%= user.id%>" id="<%= user.id%>">
+    <label for="<%= user.id%>" style="background-color: <%= user.color %>;">
+    <%=user.name%>
+    </label> 
+  <%})%>
+
+  <input type="submit" name="add" value="new" id="tab">
+        <label for="tab">Add Family Member</label>
+</form>
+
   <form class="search-container"action="/add" style="z-index: 40; position: relative; top: 0px;" method="post">
     <input type="text" name="country" style="z-index: 40;" id="searchInput"autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
     <button type="submit" class="submit-btn">Add</button>
@@ -423,16 +461,21 @@
   <script>
     const total_count = document.getElementById("total-count")
     const country_codes = "<%= countries %>".split(",");
+    console.log(country_codes);
+    country_codes.forEach(user => {
+            console.log(user + " color" + "<%= color %>")  ;
+            document.getElementById(user).style.fill = "<%= color %>";
+    }); 
 
-    function updateCount() {
-      let count = 0;
-      Array.from(svg.children).forEach(child => {
-        if (child.classList.contains("teal")) {
-          count++;
-        }
-      });
-      total_count.innerText = "Total Countries: " + count;
-    }
+    // function updateCount() {
+    //   let count = 0;
+    //   Array.from(svg.children).forEach(child => {
+        // if (child.classList.contains("")) {
+    //       count++;
+    //     }
+    //   });
+    //   // total_count.innerText = "Total Countries: " + count;
+    // }
 
 
     const svg = document.querySelector("svg");
@@ -441,20 +484,20 @@
       path.classList.add("gray");
 
       path.addEventListener('click', () => {
-        path.classList.toggle("teal");
+        path.classList.toggle("<%= color %>");
         path.classList.toggle("gray");
         fetch("/add/" + path.id);
-        updateCount();
+        // updateCount();
       });
     })
 
 
-    console.log(typeof ("<%= countries %>"));
-    country_codes.forEach(code => {
-      const t = document.getElementById(code);
-      t.classList.add("teal");
-      t.classList.remove("gray");
-    });
+   
+    // country_codes.forEach(code => {
+    //   const t = document.getElementById(code);
+    //   t.classList.add("<%= color %>");
+    //   // t.classList.remove("gray");
+    // });
 
     const suggestions = ["Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Sao Tome and Principe", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Virgin Islands", "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Hong Kong, SAR China", "Costa Rica", "Macao, SAR China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo, (Kinshasa)", "Cook Islands", "Côte d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (Malvinas)", "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard and Mcdonald Islands", "Holy See (Vatican City State)", "Honduras", "Hungary", "Iceland", "Micronesia, Federated States of", "Réunion", "Indonesia", "Iran, Islamic Republic of", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Moldova", "Kazakhstan", "Kenya", "Kiribati", "Korea (North)", "Korea (South)", "Kuwait", "Kyrgyzstan", "Lao PDR", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macedonia, Republic of", "Madagascar", "Malawi", "Malaysia", "Maldives", "Bermuda", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Palestinian Territory", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn", "Portugal", "Puerto Rico", "Qatar", "Romania", "Russian Federation", "Rwanda", "Saint-Barthélemy", "Saint Helena", "Saint Kitts and Nevis", "Saint Lucia", "Saint-Martin (French part)", "Saint Pierre and Miquelon", "Saint Vincent and Grenadines", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen Islands", "Swaziland", "Sweden", "Switzerland", "Syrian Arab Republic (Syria)", "Taiwan, Republic of China", "Tajikistan", "Tanzania, United Republic of", "Thailand", "India", "Congo (Brazzaville)", "Poland", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "US Minor Outlying Islands", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela (Bolivarian Republic)", "Viet Nam", "Virgin Islands, US", "Wallis and Futuna Islands", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"]
 
